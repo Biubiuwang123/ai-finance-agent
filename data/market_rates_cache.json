@@ -1,0 +1,5 @@
+{
+  "description": "Local cache of API responses from FRED and Zillow",
+  "cache": {}
+}
+
