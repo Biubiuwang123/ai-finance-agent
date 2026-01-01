@@ -1,4 +1,7 @@
-import yaml
+import logging
+import streamlit as st
+import toml
+import copy
 import numpy as np
 import pandas as pd
 from datetime import datetime, date
@@ -434,8 +437,31 @@ class RealEstateSentinel:
     """Main Controller"""
     
     def __init__(self, user_config_path, constants_config_path, override_inputs=None):
-        with open(user_config_path, 'r') as f: self.user = yaml.safe_load(f)
-        with open(constants_config_path, 'r') as f: self.const = yaml.safe_load(f)
+        # Load User Profile from Secrets (ignoring file path)
+        try:
+            # Safely convert st.secrets to plain dict to avoid recursion in deepcopy
+            def _secrets_to_dict(secrets_obj):
+                d = {}
+                for k, v in secrets_obj.items():
+                    if hasattr(v, 'items'):
+                        d[k] = _secrets_to_dict(v)
+                    else:
+                        d[k] = v
+                return d
+            
+            self.user = copy.deepcopy(_secrets_to_dict(st.secrets))
+        except FileNotFoundError:
+             # Fallback or allow usage of raw path if st.secrets fails (e.g. usage outside streamlit)
+             # But instructions say "change it to built-in st.secrets".
+             self.user = {}
+
+        # Load Constants
+        const_path = str(constants_config_path)
+        if const_path.endswith('.yaml'):
+            const_path = const_path.replace('.yaml', '.toml')
+            
+        with open(const_path, 'r') as f:
+            self.const = toml.load(f)
         
         self.pf = self.user['personal_finance']
         self.fin_ops = self.const['financial_assumptions']

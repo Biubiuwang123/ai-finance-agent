@@ -12,29 +12,14 @@ from fredapi import Fred
 import yfinance as yf
 import pandas as pd
 from datetime import datetime, timedelta
-import yaml
 from pathlib import Path
 
 # --- CONFIGURATION & SECURITY ---
 FRED_KEY = None
 try:
-    # Robust path handling for different OS/Environments
-    # Go up from src/sentinel/ to project root
-    base_path = Path(__file__).parent.parent.parent
-    profile_path = base_path / "config" / "privacy" / "user_profile.yaml"
-    
-    with open(profile_path, 'r') as f:
-        profile_data = yaml.safe_load(f)
-        if profile_data and "api_keys" in profile_data:
-            FRED_KEY = profile_data["api_keys"].get("fred_api_key")
-except (FileNotFoundError, KeyError, yaml.YAMLError):
+    FRED_KEY = st.secrets["api_keys"]["fred_api_key"]
+except (FileNotFoundError, KeyError):
     pass
-
-if not FRED_KEY:
-    try:
-        FRED_KEY = st.secrets["api_keys"]["fred_api_key"]
-    except (FileNotFoundError, KeyError):
-        FRED_KEY = None
 
 class FinancialDataLoader:
     def __init__(self):

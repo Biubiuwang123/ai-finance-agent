@@ -52,3 +52,4 @@ Thumbs.db
 # Privacy - Personal data (GitIgnored)
 config/privacy/user_profile.yaml
 
+.streamlit/

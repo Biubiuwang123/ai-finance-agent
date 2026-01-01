@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-import yaml
+
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -19,14 +19,18 @@ from data_loader import FinancialDataLoader
 st.set_page_config(page_title="Real Estate Sentinel", layout="wide", page_icon="🛡️")
 st.title("🛡️ Real Estate Sentinel: Strategic Paydown Simulator")
 
+import toml
+
 # --- 1. CONFIGURATION LOADING ---
 def load_defaults():
     try:
+        # Load Personal (Secrets)
+        prof = st.secrets["personal_finance"]
+        
+        # Load Constants (TOML in Git)
         base = Path(__file__).parent.parent
-        with open(base / "config" / "privacy" / "user_profile.yaml") as f:
-            prof = yaml.safe_load(f)['personal_finance']
-        with open(base / "config" / "constants.yaml") as f:
-            const = yaml.safe_load(f)['financial_assumptions']
+        with open(base / "config" / "constants.toml") as f:
+            const = toml.load(f)['financial_assumptions']
         return prof, const
     except Exception as e:
         st.error(f"Error loading configuration: {e}")
@@ -86,8 +90,8 @@ with st.expander("⚙️ Simulation Inputs", expanded=True):
 
 # --- RUN ENGINE ---
 sentinel = RealEstateSentinel(
-    user_config_path=base_path / "config" / "privacy" / "user_profile.yaml",
-    constants_config_path=base_path / "config" / "constants.yaml",
+    user_config_path=base_path / "config" / "privacy" / "user_profile.yaml", # Ignored by class, but keeping valid path structure
+    constants_config_path=base_path / "config" / "constants.toml",
     override_inputs=scenario_inputs
 )
 results = sentinel.run_analysis()

@@ -1,0 +1,30 @@
+# Shared constants across the application
+# Tax rates, Zip rules, and other shared configurations
+
+# Stock Market Constants (Top Level)
+risk_free_rate = 0.04
+market_expected_return = 0.08
+market_volatility = 0.15
+liquidity_penalty = -0.05
+
+# Tax Rates (example structure)
+[financial_assumptions]
+default_tax_rate = 0.37 # if I own the hosue for less than 1 year, my gain will be subject to this tax
+mortgage_deduction_cap = 750000
+capital_gains_tax = 0.238 # if I own the hosue for more than 1 year, my gain will be subject to this tax; it consists of 20% max federal tax plus 3.8% NIIT
+liquidity_premium = 0.005  # 0.5% penalty for illiquidity of home equity
+agent_commission = 0.05
+WA_REET = 0.016 #WA State Real Estate Exercise Tax
+Closing_Cost = 5000 
+min_runway_months = 6     # Gate 1 Requirement
+safe_ltv_threshold = 0.85  # Gate 2 Requirement (85% gives 15% cushion)
+
+# Selling Costs Detailed
+wa_reet = 0.0178 # Washington State Real Estate Excise Tax (tiered, approx for high value)
+closing_costs = 15000 # Flat est for escrow/title/etc
+
+# Simulation Defaults
+[simulation_defaults]
+simulations = 10000        # Number of Monte Carlo simulations for wealth projection
+default_sensitivity = 0.10  # Home price sensitivity to rate changes (10% per 1% rate change)
+desired_buffer = 0.0        # Desired cash buffer after selling home (for moving costs, etc.)
